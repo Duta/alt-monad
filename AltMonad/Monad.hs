@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -8,24 +9,30 @@ import AltMonad.Category
 import AltMonad.Compose
 import AltMonad.Functor
 import AltMonad.Identity
+import AltMonad.Monoid
 import AltMonad.NaturalTrans
 import qualified Control.Monad as Normal
 
-class HaskellFunctor m => Monad m where
-  return :: I ~> m
-  join :: (m ~. m) ~> m
+class    (HaskellFunctor m, Monoid I (~.) (~>) m) => Monad m
+instance (HaskellFunctor m, Monoid I (~.) (~>) m) => Monad m
 
-returnDefault :: Normal.Monad m => I ~> m
-returnDefault = NatTrans (Normal.return . runId)
+class Monad m
+   => HaskellMonad m where
+  monadic :: a -> m a
+  (>>=)   :: m a -> (a -> m b) -> m b
 
-joinDefault :: Normal.Monad m => (m ~. m) ~> m
-joinDefault = NatTrans (Normal.join . runComp)
+instance Monad m
+      => HaskellMonad m where
+  monadic =  transform mid   . Id
+  x >>= f = (transform mcomb . Comp) (map f x)
 
-return' :: Monad m => a -> m a
-return' = transform return . Id
+instance HaskellMonad m
+      => Normal.Monad m where
+  return = monadic
+  (>>=)  = (>>=)
 
-join' :: Monad m => m (m a) -> m a
-join' = transform join . Comp
+midDefault :: Normal.Monad m => I ~> m
+midDefault = NatTrans (Normal.return . runId)
 
-(>>=) :: Monad m => m a -> (a -> m b) -> m b
-x >>= f = join' (map f x)
+mcombDefault :: Normal.Monad m => (m ~. m) ~> m
+mcombDefault = NatTrans (Normal.join . runComp)
