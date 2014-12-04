@@ -13,8 +13,7 @@ import AltMonad.Hask
 import qualified Data.Monoid as Normal
 import Prelude (curry)
 
-class Category c
-   => Monoid i p c m
+class Monoid i p c m
     | m -> i p where
   mid   :: i `c` m
   mcomb :: (m `p` m) `c` m
