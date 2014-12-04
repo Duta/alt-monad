@@ -7,7 +7,7 @@ module AltMonad.Category where
 import AltMonad.Hask
 
 class Category cat where
-  id  :: cat a a
+  id  :: a `cat` a
   (.) :: b `cat` c -> a `cat` b -> a `cat` c
 
 instance Category Hask where
