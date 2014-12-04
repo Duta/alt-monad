@@ -9,6 +9,7 @@
 module AltMonad.Monoid where
 
 import AltMonad.Category
+import AltMonad.Hask
 import qualified Data.Monoid as Normal
 import Prelude (curry)
 
@@ -18,12 +19,12 @@ class Category c
   mid   :: i `c` m
   mcomb :: (m `p` m) `c` m
 
-class Monoid () (,) (->) m
+class Monoid () (,) Hask m
    => HaskellMonoid m where
   empty :: m
   (<>)  :: m -> m -> m
 
-instance Monoid () (,) (->) m
+instance Monoid () (,) Hask m
       => HaskellMonoid m where
   empty = mid ()
   (<>)  = curry mcomb
