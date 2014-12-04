@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeOperators #-}
@@ -8,20 +9,21 @@ module AltMonad.Monad where
 import AltMonad.Category
 import AltMonad.Compose
 import AltMonad.Functor
+import AltMonad.Hask
 import AltMonad.Identity
 import AltMonad.Monoid
 import AltMonad.NaturalTrans
 import qualified Control.Monad as Normal
 
-class    (HaskellFunctor m, Monoid I (~.) (~>) m) => Monad m
-instance (HaskellFunctor m, Monoid I (~.) (~>) m) => Monad m
+class    (Endofunctor c m, Monoid I (~.) (~>) m) => Monad c m
+instance (Endofunctor c m, Monoid I (~.) (~>) m) => Monad c m
 
-class Monad m
+class Monad Hask m
    => HaskellMonad m where
   monadic :: a -> m a
   (>>=)   :: m a -> (a -> m b) -> m b
 
-instance Monad m
+instance Monad Hask m
       => HaskellMonad m where
   monadic =  transform mid   . Id
   x >>= f = (transform mcomb . Comp) (map f x)
