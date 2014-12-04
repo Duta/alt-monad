@@ -8,7 +8,6 @@
 {-# LANGUAGE PolyKinds #-}
 module AltMonad.Monoid where
 
-import AltMonad.Category
 import AltMonad.Hask
 import qualified Data.Monoid as Normal
 import Prelude (curry)
