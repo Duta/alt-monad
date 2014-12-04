@@ -7,6 +7,6 @@ module AltMonad.NaturalTrans where
 import AltMonad.Functor
 
 newtype a ~> b = NatTrans
-  { transform :: (HaskellFunctor a, HaskellFunctor b)
+  { transform :: (Functor c d a, Functor c d b)
               => a x -> b x
   }

@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleContexts #-}
@@ -12,7 +13,8 @@ import AltMonad.Hask
 import qualified Data.Functor as Normal
 
 class (Category c, Category d)
-   => Functor c d f where
+   => Functor c d f
+    | f -> c d where
   map :: a `c` b -> f a `d` f b
 
 class    Functor a a f => Endofunctor a f
